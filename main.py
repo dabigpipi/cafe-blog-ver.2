@@ -101,7 +101,7 @@ class Comment(db.Model):
     comment_cafe_shop = relationship("Cafe", back_populates="comments")
 
 #Line below only required once, when creating DB.
-db.create_all()
+# db.create_all()
 
 
 # user can't see the buttons
@@ -217,7 +217,10 @@ def query_for_cafes():
                                          int(eliminate_title_zero(open_time_min)))
             is_close_time = datetime.time(int(eliminate_title_zero(close_time_hour)),
                                           int(eliminate_title_zero(close_time_min)))
-            current_time = datetime.datetime.now().time()
+
+            # time in heroku is slower than Taiwan about 8 hrs
+            not_current_time = datetime.datetime.now() + datetime.timedelta(hours=8)
+            current_time = not_current_time.time()
 
             in_time_range = time_in_range(start_time=is_open_time, end_time=is_close_time, current_time=current_time)
 
