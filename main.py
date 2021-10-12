@@ -13,8 +13,6 @@ import bleach
 import smtplib
 import os
 
-SECRET_KEY = os.urandom(16)
-# e.g. b'_5#y2L"F4Q8z\n\xec]/'
 
 # for visitors & users to mail me
 MY_EMAIL = os.environ.get("EMAIL_ACCOUNT")
@@ -23,7 +21,7 @@ TO_EMAIL = os.environ.get("TO_EMAIL")
 
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = SECRET_KEY
+app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
 ckeditor = CKEditor(app)
 Bootstrap(app)
 # ref: https://pythonhosted.org/Flask-Gravatar/
@@ -37,7 +35,7 @@ gravatar = Gravatar(app,
                     base_url=None)
 
 ##CONNECT TO DB
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///blog.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
