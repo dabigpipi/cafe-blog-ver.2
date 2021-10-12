@@ -35,7 +35,7 @@ gravatar = Gravatar(app,
                     base_url=None)
 
 ##CONNECT TO DB
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', "sqlite:///blog.db")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -344,6 +344,11 @@ def add_new_cafe():
     form = AddCafeForm()
     if form.validate_on_submit():
 
+        # if the cafe has been added before
+        if Cafe.query.filter_by(name=form.name.data).first():
+            flash("The cafe has been added before.")
+            return redirect(url_for("add_new_cafe"))
+
         opening_time = f"Mon: {form.open_time_Mon.data}," \
                        f"Tue: {form.open_time_Tue.data}," \
                        f"Wed: {form.open_time_Wed.data}," \
@@ -402,8 +407,8 @@ def edit_cafe(cafe_id):
 @app.route("/delete/<int:cafe_id>")
 @admin_only
 def delete_cafe(cafe_id):
-    post_to_delete = Cafe.query.get(cafe_id)
-    db.session.delete(post_to_delete)
+    cafe_to_delete = Cafe.query.get(cafe_id)
+    db.session.delete(cafe_to_delete)
     db.session.commit()
     return redirect(url_for('query_for_cafes'))
 
