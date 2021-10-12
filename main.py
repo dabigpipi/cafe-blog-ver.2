@@ -17,9 +17,9 @@ SECRET_KEY = os.urandom(16)
 # e.g. b'_5#y2L"F4Q8z\n\xec]/'
 
 # for visitors & users to mail me
-MY_EMAIL = os.environ["EMAIL_ACCOUNT"]
-MY_PASSWORD = os.environ["EMAIL_PASSWORD"]
-TO_EMAIL = os.environ["TO_EMAIL"]
+MY_EMAIL = os.environ.get("EMAIL_ACCOUNT")
+MY_PASSWORD = os.environ.get("EMAIL_PASSWORD")
+TO_EMAIL = os.environ.get("TO_EMAIL")
 
 
 app = Flask(__name__)
