@@ -101,7 +101,7 @@ class Comment(db.Model):
     comment_cafe_shop = relationship("Cafe", back_populates="comments")
 
 #Line below only required once, when creating DB.
-# db.create_all()
+db.create_all()
 
 
 # user can't see the buttons
