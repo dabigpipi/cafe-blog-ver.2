@@ -1,0 +1,93 @@
+{% include "header.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+
+  <!-- Page Header -->
+  <header class="masthead" style="background-image: url('https://source.unsplash.com/1600x700/?cafe')">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="post-heading">
+            <h2>{{cafe.name}}</h2>
+            <h2 class="subheading">{{cafe.location}}</h2>
+            <span class="meta">
+              <a href="{{cafe.map_url}}">Open in Google Map</a>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Post Content -->
+  <article>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <p>
+              Americano: $ {{ cafe.coffee_price }}
+              <br>
+              {% if cafe.has_wifi %}
+                Providing Wifi
+              {% else %}
+                Not Providing Wifi
+              {% endif %}
+              <br>
+              {% if cafe.has_sockets %}
+                Providing Sockets 🔌
+              {% else %}
+                Not Providing Sockets 🔌
+              {% endif %}
+              <br>
+              <br>
+              You could know how much you would spend roughly by checking the coffee price.
+          </p>
+          <hr>
+
+          {% if current_user.id == 1%}
+            <div class="clearfix">
+            <a class="btn btn-primary float-right" href="{{url_for('edit_cafe', cafe_id=cafe.id)}}">Edit Cafe</a>
+            </div>
+          {% endif %}
+
+
+<!--           Comments Area -->
+<!--      second line-->
+<!--      make the submit button blue-->
+<!--      ref: https://pythonhosted.org/Flask-Bootstrap/forms.html#form-macro-reference-->
+          {{ wtf.quick_form(form, novalidate=True, button_map={"submit": "primary"}) }}
+
+<!--      CKeditor Working with Flask-WTF/WTForms step3-->
+<!--      call ckeditor.config() and pass the CKEditorField attribute’s name-->
+<!--          Load ckeditor-->
+          {{ ckeditor.load() }}
+<!--          Configure the ckeditor to tell it which field in WTForm need to be CKEditor.-->
+          {{ ckeditor.config(name='comment_text') }}
+
+
+          <div class="col-lg-8 col-md-10 mx-auto comment">
+            <br>
+              {% for comment in cafe.comments %}
+                  <ul class="commentList">
+                    <li>
+                        <div class="commenterImage">
+                          <img src="{{ comment.comment_author.email | gravatar }}"/>
+                        </div>
+                        <div class="commentText">
+                          <p>{{ comment.text|safe }}</p>
+                          <span class="date sub-text">{{ comment.comment_author.name }}</span>
+                        </div>
+                    </li>
+                  </ul>
+              {% endfor %}
+            </div>
+
+
+          </div>
+      </div>
+    </div>
+  </article>
+
+  <hr>
+{% include "footer.html" %}

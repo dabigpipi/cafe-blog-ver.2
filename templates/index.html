@@ -1,0 +1,118 @@
+<!--first line-->
+{% import "bootstrap/wtf.html" as wtf %}
+{% include "header.html" %}
+
+
+  <!-- Page Header -->
+  <header class="masthead" style="background-image: url('https://images.unsplash.com/photo-1514845994104-1be22149278b?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=700&ixid=MnwxfDB8MXxyYW5kb218MHx8Y29mZmVlfHx8fHx8MTYzMzYwMDI3Nw&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1600')">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="site-heading">
+            <h1>Cafe Collection</h1>
+            <span class="subheading">Wish a good taste from every coffee drop.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+<!--    user have logged in -->
+        {% if current_user.is_authenticated %}
+
+  <!--      second line-->
+  <!--      make the submit button blue-->
+  <!--      ref: https://pythonhosted.org/Flask-Bootstrap/forms.html#form-macro-reference-->
+          {{ wtf.quick_form(form, novalidate=True, button_map={"submit": "primary"}) }}
+
+<!--    user have not logged in -->
+        {% else %}
+          <h3>
+            Using search cafes service by
+            <u>
+              <a href="{{url_for('login')}}"> LOG IN .</a>
+            </u>
+          </h3>
+          <p>
+            Don't have an account?
+            <br>
+            <a href="{{url_for('register')}}">
+              SIGN UP HERE.
+            </a>
+          </p>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        {% if be_searched %}
+<!--        no cafes in the region is opening-->
+          {% if cafes == [] %}
+            <div class="post-preview">
+              <br>
+              <p class="post-meta">
+                Sorry, there is no cafe opening in the region.
+              </p>
+            </div>
+
+          {% else%}
+            {% for cafe in cafes %}
+            <div class="post-preview">
+              <a href="{{ url_for('show_cafe', cafe_id=cafe[0].id) }}">
+                <h2 class="post-title">
+                  {{cafe[0].name}}
+                </h2>
+                <h3 class="post-subtitle">
+                  {{cafe[0].location}}
+                </h3>
+              </a>
+
+              <p class="post-meta">
+                Opening Hours: {{ cafe[1] }}
+                <br>
+                {% if cafe[0].has_wifi %}
+                  Providing Wifi
+                {% else %}
+                  Not Providing Wifi
+                {% endif %}
+                <br>
+                {% if cafe[0].has_sockets %}
+                  Providing Sockets 🔌
+                {% else %}
+                  Not Providing Sockets 🔌
+                {% endif %}
+
+                {% if current_user.id == 1 %}
+                  <a href="{{url_for('delete_cafe', cafe_id=cafe[0].id) }}">✘</a>
+                {% endif %}
+              </p>
+
+            </div>
+            <hr>
+            {% endfor %}
+          {% endif %}
+        {% endif %}
+
+
+        <!-- New Post -->
+        {% if current_user.id == 1 %}
+          <div class="clearfix">
+            <a class="btn btn-primary float-right" href="{{url_for('add_new_cafe')}}">Add New Cafe</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <hr>
+
+{% include "footer.html" %}
