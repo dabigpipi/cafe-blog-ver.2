@@ -135,16 +135,6 @@ def time_in_range(start_time, end_time, current_time):
         # over midnight
         return current_time >= start_time or end_time >= current_time
 
-def send_email(name, email, phone, message):
-    email_message = f"Subjects: New Message\n\nName: {name}\nEmail: {email}\nPhone: {phone}\nMessage:{message}"
-    with smtplib.SMTP("smtp.gmail.com") as connection:
-        connection.starttls()
-        connection.login(MY_EMAIL, MY_PASSWORD)
-        connection.sendmail(
-            from_addr=MY_EMAIL,
-            to_addrs=TO_EMAIL,
-            msg=email_message
-        )
 
 # Security cafe post from comment
 # strips invalid tags/attributes
@@ -326,16 +316,6 @@ def show_cafe(cafe_id):
 @app.route("/about")
 def about():
     return render_template("about.html")
-
-
-@app.route("/contact", methods=["POST", "GET"])
-def contact():
-    if request.method == "POST":
-        send_email(name=request.form["name"], email=request.form["email"],
-                   phone=request.form["phone"], message=request.form["message"])
-
-        return render_template("contact.html", msg_sent=True)
-    return render_template("contact.html", msg_sent=False)
 
 
 @app.route("/new-cafe", methods=["GET", "POST"])
